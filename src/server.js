@@ -11,6 +11,7 @@ import { startAutoCancelJob } from "./config/cron-jobs.js";
 
 const app = express();
 
+app.set("trust proxy", true);
 
 app.use(helmet());
 app.use(
