@@ -23,16 +23,15 @@ app.use(
       "https://creative-market-front-end-sprint-2-mu.vercel.app",
     ],
     credentials: true,
-    exposedHeaders: ['RateLimit-Reset', 'Retry-After']
+    exposedHeaders: ["RateLimit-Reset", "Retry-After"],
   }),
 );
-
 
 app.use(Limiter);
 
 app.use(express.json());
 app.use(express.static("public")); // will remove after upload to cloud
-app.use(cookieParser());   // will remove after upload to cloud (P'Montri's Add)
+app.use(cookieParser()); // will remove after upload to cloud (P'Montri's Add)
 
 app.use("/api", apiRoutes);
 
