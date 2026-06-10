@@ -9,7 +9,9 @@ export const loginLimiter = async (req, res, next) => {
     
     // ดึงค่าปัจจุบันมาก่อนเพื่อเช็คสถานะ
     const currentCount = await redisClient.incr(redisKey);
+    console.log(`IP: ${clientIp} | Count: ${currentCount}`);
 
+    
     // ถ้ากดครั้งที่ 8 เป๊ะ ให้สั่งล็อก 3 นาที (180 วินาที)
     if (currentCount === 8) {
       await redisClient.expire(redisKey, 180);
