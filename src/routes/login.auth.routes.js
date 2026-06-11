@@ -25,9 +25,6 @@ router.get("/status", async (req, res) => {
   }
 });
 
-
-
-
 // ตรวจสอบเซสชันของผู้ใช้
 router.get("/me", authUser, checkUser);
 

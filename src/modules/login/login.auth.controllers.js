@@ -1,12 +1,13 @@
 
 import { User } from '../register/user.model.js'; 
-
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { redisClient } from "../../config/redis.js";
 
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const clientIp = req.ip;
 
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
@@ -38,6 +39,16 @@ export const loginUser = async (req, res) => {
     const cookieName = user.role === 'admin' ? 'admin_token' : 'user_token';
 
     res.cookie(cookieName, token, cookieOptions);
+
+// ---------------------------------------------------------
+    // 2. เคลียร์ค่า Rate Limit ใน Redis เมื่อ Login สำเร็จ
+    // ---------------------------------------------------------
+    if (redisClient?.isOpen) {
+      const redisKey = `rl:login:${req.ip}`;
+      await redisClient.del(redisKey); // ลบ Key ทิ้ง เพื่อรีเซ็ตการนับกลับเป็น 0
+
+      console.log(`เคลียร์สถานะการนับให้ IP: ${clientIp} เรียบร้อยแล้ว`);
+    }
 
     res.status(200).json({
       message: 'เข้าสู่ระบบสำเร็จ',
